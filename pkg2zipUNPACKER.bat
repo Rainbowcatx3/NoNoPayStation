@@ -41,14 +41,14 @@ for /r %%f in (*.pkg) do (
             echo Processing license structure...
             set "FOUND=0"
             :: === 1. Main app ===
-            if exist "app\*\work.bin" (
+            if exist "app\*" (
                 for /d %%a in (app\*) do (
-                    if exist "%%a\work.bin" (
+                    if exist "work.bin" (
                         set "TITLE_ID=%%~na"
-                        echo Found work.bin in app\!TITLE_ID!
-                        if not exist "license\app\!TITLE_ID!" mkdir "license\app\!TITLE_ID!"
-                        move "%%a\work.bin" "license\app\!TITLE_ID!\work.bin" >nul
-                        echo Moved → license\app\!TITLE_ID!\work.bin
+                        echo Found work.bin
+                        if not exist "app\!TITLE_ID!\sce_sys\package\" mkdir "app\!TITLE_ID!\sce_sys\package\"
+                        move "work.bin" "app\!TITLE_ID!\sce_sys\package\work.bin" >nul
+                        echo Moved → app\!TITLE_ID!\sce_sys\package\work.bin
                         set "FOUND=1"
                     )
                 )
@@ -60,43 +60,15 @@ for /r %%f in (*.pkg) do (
                     for /d %%d in ("%%t\*") do (
                         set "DLC_ID=%%~nd"
                         echo Found DLC folder: addcont\!TITLE_ID!\!DLC_ID!
-                        if not exist "license\addcont\!TITLE_ID!\!DLC_ID!" (
-                            mkdir "license\addcont\!TITLE_ID!\!DLC_ID!"
-                            echo Created → license\addcont\!TITLE_ID!\!DLC_ID!
-                        )
-                        if exist "%%d\work.bin" (
-                            move "%%d\work.bin" "license\addcont\!TITLE_ID!\!DLC_ID!\work.bin" >nul
-                            echo Moved work.bin → license\addcont\!TITLE_ID!\!DLC_ID!\work.bin
+                        if exist "work.bin" (
+                            move "work.bin" "addcont\!TITLE_ID!\!DLC_ID!\sce_sys\package\work.bin" >nul
+                            echo Moved work.bin → addcont\!TITLE_ID!\!DLC_ID!\sce_sys\package\work.bin
                             set "FOUND=1"
                         )
                     )
                 )
             )
-            :: === 3. Root fallback ===
-            if "!FOUND!"=="0" if exist "work.bin" (
-                echo work.bin found in root - using fallback...
-                if exist "app\*" (
-                    for /d %%a in (app\*) do set "TITLE_ID=%%~na"
-                    if defined TITLE_ID (
-                        if not exist "license\app\!TITLE_ID!" mkdir "license\app\!TITLE_ID!"
-                        move "work.bin" "license\app\!TITLE_ID!\!DLC_ID!\work.bin" >nul
-                        echo Moved → license\app\!TITLE_ID!\!DLC_ID!\work.bin
-                    )
-                ) else if exist "addcont\*" (
-                    for /d %%t in (addcont\*) do set "TITLE_ID=%%~nt"
-                    if defined TITLE_ID (
-                        if not exist "license\addcont\!TITLE_ID!" mkdir "license\addcont\!TITLE_ID!"
-                        move "work.bin" "license\addcont\!TITLE_ID!\!DLC_ID!\work.bin" >nul
-                        echo Moved → license\addcont\!TITLE_ID!\!DLC_ID!\work.bin
-                    )
-                ) else (
-                    if not exist "license" mkdir "license"
-                    move "work.bin" "license\work.bin" >nul
-                    echo Moved → license\work.bin
-                )
-                set "FOUND=1"
-            )
-            if "!FOUND!"=="0" (
+                if "!FOUND!"=="0" (
                 echo NOTE: No work.bin found, but folder structure created if applicable.
             )
             :: === Delete original .pkg ===
