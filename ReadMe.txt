@@ -1,4 +1,4 @@
-NoPayStation is gonna go offline someday. This is a way to unpack and prepare PKG, similar to NoPayStation without NoPayStation. It unpacks the PKG in the folders. Unzips them and prepares them for immediate PSVITA transfer. 
+NoPayStation is gonna go offline someday. This is a way to unpack and prepare PKG, similar to NoPayStation without NoPayStation. It unpacks the PKG in the folders. Unzips them and prepares them for immediate PSVITA transfer. Can handle multiple folders containing PKG and work.bin files.
 
 
 -Have 7-zip installed computer wide.
